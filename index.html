@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Scent - Aromatherapy Redefined</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* RESET & BASE STYLES */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      background: #fff;
+      color: #333;
+      transition: background 0.5s, color 0.5s;
+    }
+    body.dark-mode {
+      background: #121212;
+      color: #eee;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* HEADER & NAVIGATION */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.5s;
+    }
+    body.dark-mode header {
+      background: rgba(18,18,18,0.9);
+    }
+    header .logo {
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    nav ul li {
+      position: relative;
+    }
+    nav ul li a {
+      font-size: 1em;
+      padding: 5px 10px;
+      transition: color 0.3s;
+    }
+    nav ul li a:hover {
+      color: #e67e22;
+    }
+
+    /* DARK/LIGHT TOGGLE */
+    .theme-toggle {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 50%;
+      z-index: 101;
+      transition: background 0.3s;
+    }
+    body.dark-mode .theme-toggle {
+      background: #444;
+    }
+
+    /* FULLSCREEN HERO SECTION */
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url('https://raw.githubusercontent.com/nordeim/The-Scent/refs/heads/main/images/scent2.jpg') no-repeat center center/cover;
+    }
+    .hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -3;
+    }
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      padding: 0 20px;
+    }
+    .hero-overlay h1 {
+      font-size: 4em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    }
+    .hero-overlay p {
+      font-size: 1.4em;
+      max-width: 800px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+    }
+    
+    /* SCENT TRAILS SVG ANIMATION */
+    .scent-trail {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -2;
+    }
+    @keyframes trailAnimation {
+      from { stroke-dashoffset: 1000; }
+      to { stroke-dashoffset: 0; }
+    }
+    .scent-trail svg path {
+      stroke: rgba(255, 255, 255, 0.3);
+      stroke-width: 2;
+      fill: none;
+      stroke-dasharray: 1000;
+      animation: trailAnimation 12s linear infinite;
+    }
+    
+    /* ABOUT SECTION WITH PARALLAX */
+    .about {
+      background: #f9f9f9;
+      padding: 120px 20px;
+      background-attachment: fixed;
+      text-align: center;
+    }
+    body.dark-mode .about { background: #1e1e1e; }
+    .about h2 {
+      font-size: 2.8em;
+      margin-bottom: 20px;
+    }
+    .about p {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.2em;
+      line-height: 1.8;
+    }
+    
+    /* PRODUCT SHOWCASE */
+    .products {
+      padding: 80px 20px;
+      background: #fff;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    body.dark-mode .products { background: #121212; }
+    .products img {
+      width: 100%;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .products img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+    
+    /* INTERACTIVE QUIZ SECTION */
+    .quiz-container {
+      padding: 80px 20px;
+      background: #f4f4f4;
+      text-align: center;
+    }
+    body.dark-mode .quiz-container { background: #1a1a1a; }
+    .quiz-container h2 {
+      font-size: 2.2em;
+      margin-bottom: 30px;
+    }
+    .quiz-step {
+      display: none;
+      margin-bottom: 20px;
+      font-size: 1.1em;
+    }
+    .quiz-step.active {
+      display: block;
+    }
+    .quiz-controls {
+      margin-top: 20px;
+    }
+    .quiz-controls button {
+      background: #e67e22;
+      border: none;
+      padding: 10px 25px;
+      margin: 5px;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .quiz-controls button:hover {
+      background: #cf711f;
+    }
+    
+    /* TESTIMONIALS SECTION */
+    .testimonials {
+      padding: 80px 20px;
+      background: #fff;
+      text-align: center;
+    }
+    body.dark-mode .testimonials { background: #121212; }
+    .testimonial {
+      opacity: 0;
+      transition: opacity 0.8s ease-out;
+      margin: 20px auto;
+      max-width: 700px;
+      font-style: italic;
+      font-size: 1.2em;
+      line-height: 1.6;
+    }
+    .testimonial.visible { opacity: 1; }
+    
+    /* SHOP NOW BUTTON */
+    .shop-now {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #e67e22;
+      color: #fff;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 50px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: transform 0.3s;
+      z-index: 110;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .shop-now:hover {
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      background: #222;
+      color: #ccc;
+    }
+    footer a { color: #e67e22; }
+  </style>
+</head>
+<body>
+  <!-- HEADER & THEME TOGGLE -->
+  <header>
+    <div class="logo"><i class="fas fa-leaf"></i> The Scent</div>
+    <nav>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#quiz">Discover</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+      </ul>
+    </nav>
+    <div class="theme-toggle"><i class="fas fa-adjust"></i></div>
+  </header>
+  
+  <!-- FULLSCREEN HERO SECTION -->
+  <section class="hero" id="hero">
+    <!-- Optional Video Background -->
+    <video autoplay muted loop playsinline>
+      <source src="hero-video.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay">
+      <h1>Welcome to The Scent</h1>
+      <p>Experience serenity and balance with our premium aromatherapy products.</p>
+    </div>
+    <!-- Scent Trail SVG Animation -->
+    <div class="scent-trail">
+      <svg width="100%" height="100%">
+        <path d="M0,200 C300,100 700,300 1000,200" />
+      </svg>
+    </div>
+  </section>
+  
+  <!-- ABOUT SECTION WITH PARALLAX -->
+  <section class="about" id="about">
+    <h2>Our Story</h2>
+    <p>
+      At The Scent, our mission is to promote mental and physical health through the power of aromatherapy.
+      Sourcing the finest natural ingredients from around the globe, our unique formulations balance the body,
+      mind, and spirit in a world that moves too fast.
+    </p>
+  </section>
+  
+  <!-- PRODUCT SHOWCASE -->
+  <section class="products" id="products">
+    <img src="https://raw.githubusercontent.com/nordeim/The-Scent/refs/heads/main/images/scent2.jpg" alt="Aroma Product 1">
+    <img src="https://raw.githubusercontent.com/nordeim/The-Scent/refs/heads/main/images/scent4.jpg" alt="Aroma Product 2">
+    <img src="https://raw.githubusercontent.com/nordeim/The-Scent/refs/heads/main/images/scent5.jpg" alt="Aroma Product 3">
+    <img src="https://raw.githubusercontent.com/nordeim/The-Scent/refs/heads/main/images/scent6.jpg" alt="Aroma Product 4">
+    <img src="https://raw.githubusercontent.com/nordeim/The-Scent/refs/heads/main/images/soap2.jpg" alt="Premium Soap 1">
+    <img src="https://raw.githubusercontent.com/nordeim/The-Scent/refs/heads/main/images/soap4.jpg" alt="Premium Soap 2">
+    <img src="https://raw.githubusercontent.com/nordeim/The-Scent/refs/heads/main/images/soap5.jpg" alt="Premium Soap 3">
+    <img src="https://raw.githubusercontent.com/nordeim/The-Scent/refs/heads/main/images/soap6.jpg" alt="Premium Soap 4">
+  </section>
+  
+  <!-- INTERACTIVE QUIZ SECTION -->
+  <section class="quiz-container" id="quiz">
+    <h2>Find Your Signature Scent</h2>
+    <div id="quiz-steps">
+      <div class="quiz-step active">
+        <p>Step 1: What mood would you like to enhance today?</p>
+        <div class="quiz-controls">
+          <button class="next">Next</button>
+        </div>
+      </div>
+      <div class="quiz-step">
+        <p>Step 2: Choose your preferred scent profile:</p>
+        <div class="quiz-controls">
+          <button class="prev">Back</button>
+          <button class="next">Next</button>
+        </div>
+      </div>
+      <div class="quiz-step">
+        <p>Step 3: Select your product type</p>
+        <div class="quiz-controls">
+          <button class="prev">Back</button>
+          <button class="next">Finish</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- TESTIMONIALS SECTION -->
+  <section class="testimonials" id="testimonials">
+    <div class="testimonial">
+      <p>"The Scent transports me to a world of calm every time I light their aromatherapy candles."</p>
+      <p><strong>- A Satisfied Customer</strong></p>
+    </div>
+    <div class="testimonial">
+      <p>"A perfect blend of nature and design – my daily stress melts away with each use."</p>
+      <p><strong>- A Happy Client</strong></p>
+    </div>
+  </section>
+  
+  <!-- FLOATING SHOP NOW BUTTON -->
+  <button class="shop-now"><i class="fas fa-shopping-bag"></i> Shop Now</button>
+  
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 The Scent. All rights reserved.</p>
+    <p>Design & Developed with <i class="fas fa-heart"></i> by The Scent Team</p>
+  </footer>
+  
+  <!-- SCRIPTS -->
+  <script>
+    // Dark/Light Mode Toggle
+    document.querySelector('.theme-toggle').addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    // Quiz Navigation
+    const quizSteps = document.querySelectorAll('.quiz-step');
+    let currentStep = 0;
+    const updateQuizStep = () => {
+      quizSteps.forEach((step, index) => {
+        step.classList.toggle('active', index === currentStep);
+      });
+    };
+    document.querySelectorAll('.next').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (currentStep < quizSteps.length - 1) {
+          currentStep++;
+          updateQuizStep();
+        }
+      });
+    });
+    document.querySelectorAll('.prev').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (currentStep > 0) {
+          currentStep--;
+          updateQuizStep();
+        }
+      });
+    });
+
+    // Scroll-triggered testimonial fade-in
+    const testimonials = document.querySelectorAll('.testimonial');
+    const revealTestimonials = () => {
+      testimonials.forEach(testimonial => {
+        const rect = testimonial.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.8) {
+          testimonial.classList.add('visible');
+        }
+      });
+    };
+    window.addEventListener('scroll', revealTestimonials);
+    revealTestimonials();
+  </script>
+</body>
+</html>
